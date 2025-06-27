@@ -117,61 +117,46 @@ If you find my projects helpful or interesting, consider supporting me!
 ---
 
 <div align="center">
-  <h3>Featured Project: YouTube Video Upload Automation</h3>
-  <p>Automate uploading videos to YouTube with custom titles, descriptions, and tags.</p>
-</div>
+<br />
 
-#### 📁 Project Structure
+**StudyNotion** is a comprehensive ed-tech platform designed to empower educators and learners. It offers a seamless experience for creating, managing, and consuming educational content online.
 
-```
-your_project/
-│
-├── testGoogle.json         # Google API credentials
-├── nktech.png              # Watermark/logo image
-├── uploaded_videos.txt     # (Auto-generated) Tracks uploaded videos
-├── videos/                 # Place your raw .mp4, .mov files here
-│   ├── video1.mp4
-│   ├── video2.mp4
-│
-├── output/                 # (Auto-created) Watermarked videos & thumbnails
-```
+### 🚀 Features
 
-## 🚀 Features
+- **Course Creation:** Instructors can easily create, edit, and manage courses with rich content, including videos, quizzes, and assignments.
+- **Student Dashboard:** Learners get a personalized dashboard to track progress, enroll in courses, and access learning materials.
+- **Secure Authentication:** Robust user authentication and authorization for both students and instructors.
+- **Payment Integration:** Supports secure payments for course enrollments.
+- **Responsive Design:** Fully responsive UI for optimal experience on any device.
+- **Admin Panel:** Powerful admin tools for managing users, courses, and platform analytics.
 
-- Batch upload videos to YouTube
-- Set custom titles, descriptions, and tags
-- Watermark videos automatically
-- Generate and upload thumbnails
-- Tracks uploaded videos to prevent duplicates
+### 🛠️ Tech Stack
 
-## 🛠️ Setup
+- **Frontend:** React.js, Redux, Tailwind CSS
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB
+- **Authentication:** JWT, OAuth
+- **Payments:** Stripe API
+- **Cloud & Storage:** Cloudinary, AWS S3
 
-1. **Clone the repository**
-2. **Add your Google API credentials**  
-    Place `testGoogle.json` in the root directory.
-3. **Add your videos**  
-    Put `.mp4` or `.mov` files in the `videos/` folder.
-4. **Add watermark**  
-    Place your logo as `nktech.png` in the root directory.
+### 📸 Screenshots
 
-## ⚙️ Usage
+<!-- Add screenshots here if available -->
+<!-- ![StudyNotion Screenshot](link-to-screenshot.png) -->
 
-Run the automation script (see your main script for details):
+### 📦 Repository
 
-```bash
-python upload_automation.py
-```
+[GitHub Repo](https://github.com/nandan222001/StudyNotion)
 
-## 📝 Customization
+### 🌐 Live Demo
 
-- **Titles, Descriptions, Tags:**  
-  Edit the script or provide a CSV/JSON file with metadata for each video.
-- **Watermark:**  
-  Replace `nktech.png` with your own logo.
+[studynotion.netlify.app](https://studynotion.netlify.app/)
 
-## 📄 License
+### 📄 License
 
-MIT License
+This project is licensed under the MIT License.
 
 ---
-*Automate your YouTube workflow and save hours!*
+
+Empowering education, one course at a time!(An ed-tech platform)</h3>
+</div>
