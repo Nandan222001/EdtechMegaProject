@@ -2,6 +2,7 @@ const User = require('../models/Users');
 const OTP = require('../models/OTP');
 const otpGenerator = require('otp-generator');
 const bcrypt = require('bcrypt');
+const Profile = require('../models/Profile');
 
 const sentOtp = async(req,res) => {
     
@@ -79,9 +80,59 @@ const signUp = async(req,res) => {
 
     const checkEmailExist = await User.findOne({email});
 
-    if
+    if(checkEmailExist) {
+        return res.status(403).json({
+            success : false,
+            message : "User Allready Exist !!!"
+        });
+    }
 
+    if(password !== confirmPassword) {
+        return res.status(403).json({
+            success : false,
+            message : "Password And Confirm Password is not equal !!!"
+        });
+    }
 
+    const recentOtp = await otp.findOne({email}).sort({creaatedAt:-1}).limit(1);
+
+    if(recentOtp.length == 0) {
+        return res.status(400).json({
+            success : false ,
+            message : "Otp Not found !!!",
+        });
+    } else if(recentOtp.otp !== otp){
+        return res.status(400).json({
+            success : false ,
+            message : "Invalid Otp !!!"
+        });
+    }
+
+    const hashedPassword = await bcrypt.hash(password,10);
+
+    const profileDetails = await Profile.create({
+        gender : null,
+        dateOfBirth : null ,
+        about : null ,
+        contactNumber : null ,
+    });
+
+    const user = await User.create({
+        firstName,
+        lastName,
+        email,
+        contactNumber ,
+        password : hashedPassword ,
+        accountType ,
+        additionalDetails : profileDetails._id,
+        image : `https://api.dicebear.com/9.x/initials/svg/seed=${firstName} ${lastName}`
+    });
+
+    res.status(200).json({
+        success : true ,
+        data : user ,
+        message : "User Created Succesfully !!!"
+    })
 }
 //signUp
 
