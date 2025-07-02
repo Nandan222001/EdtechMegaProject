@@ -6,7 +6,7 @@ const PORT = process.env.PORT;
 const dbConnect = require('./config/dbConnect');
 dbConnect();
 
-console.log("Nandan :- ",dbConnect);
+// console.log("Nandan :- ",dbConnect);
 
 app.listen(PORT,() => {
     console.log("Server is running on port :- ",PORT);
