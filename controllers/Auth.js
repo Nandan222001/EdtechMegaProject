@@ -4,6 +4,7 @@ const otpGenerator = require('otp-generator');
 const bcrypt = require('bcrypt');
 const Profile = require('../models/Profile');
 const jwt = require('jsonwebtoken');
+const mailSender = require('../utils/mailSender');
 
 const sentOtp = async(req,res) => {
     
@@ -56,7 +57,6 @@ const sentOtp = async(req,res) => {
         });
     }
 }
-
 //sendOtp
 
 const signUp = async(req,res) => {
@@ -146,9 +146,7 @@ const signUp = async(req,res) => {
 const login = async(req,res) => {
     
     try {
-
         const {email,password} = req.body;
-
         if(!email || !password) {
             return res.status(403).json({
                 success : false ,
@@ -207,4 +205,69 @@ const login = async(req,res) => {
     }
 }
 //login
-exports.module = {sentOtp , signUp , login};
+
+const changePassword = async(req,res) => {
+
+    try{
+        const {oldPassword,newPassword,confirmPassword} = req.body;
+        const userDetails = await User.findById(req.user.id)
+
+        if(!oldPassword || !newPassword || !confirmPassword) {
+            return res.status(403).json({
+                success : false,
+                message : "All fields are required !!!"
+            });
+        }
+
+        if(newPassword !== confirmPassword) {
+            return res.status(403).json({
+                success : false , 
+                message : "New Password and Confirm Password are not same !!!",
+            })
+        }
+
+        if(await bcrypt.compare(oldPassword,userDetails.password)) {
+
+            const encryptedPassword = await bcrypt.hash(newPassword, 10)
+            const updatedUserData = await User.findByIdAndUpdate(userDetails._id,
+                            { password: encryptedPassword },
+                            { new: true }
+                        );
+
+            try {
+                const emailResponse = await mailSender(
+                    updatedUserData.email,
+                    "Password Change for EDTECH",
+                    `<h1>Password Changes for your email :- ${updatedUserData.email}`
+                );
+                console.log("Email response :- ",emailResponse);
+
+            } catch (error) {
+                return res.status(500).json({
+                    success : false ,
+                    message : "Internal Server Error while sending password updation mail !!!"
+                })
+            }
+
+            res.status(200).json({
+                success : true ,
+                data : data,
+                message : "Password Changed Succesfully !!!",
+            })
+
+        } else {
+            return res.status(402).json({
+                success : false ,
+                message : "Old Password Is Incorrect !!!"
+            })
+        }
+    } catch (error) {
+        return res.status(500).json({
+            success : false ,
+            message : "Internal Sever Error !!!"
+        });
+    } 
+}
+//changePassword
+
+exports.module = {sentOtp , signUp , login , changePassword};
