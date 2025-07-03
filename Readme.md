@@ -497,6 +497,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or suggestions, feel free to reach out:
 
--   **Your Name/Team Name:** [Your Name/Team Name Here]
--   **Email:** [nandankumar222001@gmail.com]
--   **GitHub:** [Your GitHub Profile/Organization URL]
+-   **Name/Team Name:** Nandan Singh
+-   **Email:** nandankumar222001@gmail.com
+-   **GitHub:-** https://github.com/Nandan222001
