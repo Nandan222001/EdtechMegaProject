@@ -1,6 +1,6 @@
 const cloudinary = require('cloudinary').v2();
 
-const uploadImageToCloudinary = async(file,folder,innerHeight,quality) => {
+const uploadImageToCloudinary = async(file,folder,height,quality) => {
 
     try {
         const options = {folder};
