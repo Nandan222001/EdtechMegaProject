@@ -15,12 +15,46 @@ const createCourse = async(req,res) => {
             return res.status(400).json({
                 success : false ,
                 message : "All fields are mandatory !!!"
-            })
+            });
         }
 
         //instructor
+        const userId = req.user.id;
+        const instructorDetails = await User.findById(userId);
+        if(!instructorDetails) {
+            return res.status(404).json({
+                success : false ,
+                message : "Instructor Not Found !!!"
+            });
+        }
 
+        const tagDetails = await Tag.findById(tag);
+        if(!tagDetails) {
+            return res.status(404).json({
+                success : false ,
+                message : "Tag Details Not Found !!!"
+            });
+        }
 
+        //upload image to cloudinary
+        const thumbnailImage = await uploadImageToCloudinary(thumbnail,process.env.FOLDER_NAME,null,60);
+        if(!thumbnailImage) {
+            return res.status(500).json({
+                success : false ,
+                message : "Error While Uploading Image !!!"
+            });
+        }
+
+        //create course
+        const courseDetails = await Course.create({
+            courseName,
+            courseDescription,
+            whatYouWillLearn,
+            price,
+            thumbnail : thumbnailImage.secure_url,
+            instructor : instructorDetails._id,
+            tag : tagDetails._id
+        });
 
         //return response
         return res.status(200).json({
