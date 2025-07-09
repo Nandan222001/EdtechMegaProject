@@ -46,7 +46,7 @@ const createCourse = async(req,res) => {
         }
 
         //create course
-        const courseDetails = await Course.create({
+        const newCourse = await Course.create({
             courseName,
             courseDescription,
             whatYouWillLearn,
@@ -56,11 +56,26 @@ const createCourse = async(req,res) => {
             tag : tagDetails._id
         });
 
+        //add this coursee to the user schema
+        await User.findByIdAndUpdate({_id : instructorDetails._id},
+            {
+                $push : {
+                    courses : newCourse._id,
+                }
+            },
+            { new : true }
+        );
+
+        // update tag Schema 
+        // await Tag.findByIdAndUpdate({
+        //     _id : tagDetails._id
+        // })
+
         //return response
         return res.status(200).json({
             success : true ,
-            data : courseDetails ,
-            message : "Course Added Succesfully !!!"
+            data : newCourse ,
+            message : "Course Created Succesfully !!!"
         })
         
     } catch (error) {
@@ -72,4 +87,31 @@ const createCourse = async(req,res) => {
     }
 }
 
-module.exports = {createCourse}
+const getAllCourses = async(req,res) => {
+    try {
+
+        const allCourses = await Course.find({},{instructor : true ,
+            courseName : true ,
+            price : true ,
+            thumbnail : true ,
+            ratingAndReviews : true ,
+            studentsEnrolled : true ,
+            whatYouWillLearn : true ,
+        }.populate('instructor').exec());
+
+        return res.status(200).json({
+            success : true ,
+            data : allCourses,
+            message : "Fetched Succesfully "
+        })
+
+    } catch(error) {
+        console.log("Error While Fetching Course",error.message);
+        return res.status(500).json({
+            success : false ,
+            message : "Internal Server Error While Fetching Course",
+        })
+    }
+}
+
+module.exports = {createCourse , getAllCourses}
