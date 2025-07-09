@@ -19,14 +19,14 @@ const createCourse = async(req,res) => {
         }
 
         //instructor
-        const userId = req.user.id;
-        const instructorDetails = await User.findById(userId);
-        if(!instructorDetails) {
-            return res.status(404).json({
-                success : false ,
-                message : "Instructor Not Found !!!"
-            });
-        }
+        // const userId = req.user.id;
+        // const instructorDetails = await User.findById(userId);
+        // if(!instructorDetails) {
+        //     return res.status(404).json({
+        //         success : false ,
+        //         message : "Instructor Not Found !!!"
+        //     });
+        // }
 
         const tagDetails = await Tag.findById(tag);
         if(!tagDetails) {
@@ -52,12 +52,12 @@ const createCourse = async(req,res) => {
             whatYouWillLearn,
             price,
             thumbnail : thumbnailImage.secure_url,
-            instructor : instructorDetails._id,
+            instructor : req.user.id,
             tag : tagDetails._id
         });
 
         //add this coursee to the user schema
-        await User.findByIdAndUpdate({_id : instructorDetails._id},
+        await User.findByIdAndUpdate({_id : req.user.id},
             {
                 $push : {
                     courses : newCourse._id,
