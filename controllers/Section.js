@@ -94,11 +94,21 @@ const updateSection = async(req,res) => {
 const deleteSection = async(req,res) => {
 
     try {
-
-        const sectionId = req.body.id;
+        //fetch data
+        const sectionId = req.params;
         
+        //validation
+        if(!sectionId) {
+                return res.status(400).json({
+                success : false , 
+                message : "Section Id are required !!!"
+            });
+        }
+
+        //delete Section
         await Section.findByIdAndDelete({_id : sectionId});
 
+        //return res
         return res.status(200).json({
             success : true ,
             message : "Section Deleted Succesfully !!!"
