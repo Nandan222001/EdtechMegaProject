@@ -59,4 +59,69 @@ const createSubSection = async(req,res) => {
     }
 }
 
-exports.module = {createSubSection}
+const updateSection = async(req,res) => {
+    
+    try {
+        //fetch data
+        const {title , timeDuration , discription ,subSectionId} = req.body;
+
+        //validation
+        if(!title || !timeDuration || !discription || !subSectionId) {
+            return res.status(403).json({
+                success : false ,
+                message : "All fields are required !!!"
+            });
+        }
+
+        const videoFile  = req.files.videFile;
+
+        if(videoFile) {
+            return res.status(403).json({
+                success : false ,
+                message : "All fields are required !!!"
+            });
+        }
+
+        const uploadVideToCloudinary = await imageUploader(videoFile,process.env.FOLDER_NAME,null,60);
+
+        const newSubSection = await SubSection.create({
+            title ,
+            timeDuration ,
+            discription ,
+            videoUrl : uploadVideToCloudinary.secure_url,
+        },{new:true});
+
+        return res.status(200).json({
+            success : true ,
+            data : newSubSection,
+            message : "Sub Section Updated Succesfully !!!"
+        })
+    } catch (error) {
+        console.error("Errror while updating SubSection :- ",error.message);
+        return res.status(500).json({
+            success : false ,
+            message : "Internal Server Error !!!"
+        })
+    }
+}
+
+const deleteSubsection = async(req,res) => {
+
+    const subSectionId = req.params;
+
+    if(!subSectionId) {
+        return res.status(403).json({
+            success : false ,
+            message : "Sub Section Id is Required !!!"
+        });
+    }
+
+    await SubSection.findByIdAndDelete({_id : subSectionId});
+
+    return res.status(200).json({
+            success : true ,
+            message : "Sub Section Deleted Succesfully !!!"
+        });
+}
+
+exports.module = { createSubSection , updateSection , deleteSubsection};
