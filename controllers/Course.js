@@ -114,4 +114,49 @@ const getAllCourses = async(req,res) => {
     }
 }
 
-module.exports = {createCourse , getAllCourses}
+const getCourseDetails = async(req,res) => {
+    try {
+        
+        const {courseId} = req.body;
+        const courseDetails = await Course.find({_id : courseId})
+                                .populate(
+                                    {
+                                        path : "instructor",
+                                        populete : {
+                                            path : "additionalDetails",
+                                        },
+                                    },
+                                )
+                                .populate("ratingAndReview")
+                                .populate("category")
+                                .populate({
+                                    path : "CourseContent",
+                                    populate : {
+                                        path : "subSection"
+                                    },
+                                })
+                                .exec();
+        
+        if(!courseDetails) {
+            return res.status(400).json({
+                success : false ,
+                message : `Could not find course with course id :- ${courseId}`,
+            });
+        }
+
+        return res.status(200).json({
+            success : true ,
+            data : courseDetails ,
+            message : "Course fetched succesfully !!!"
+        })
+
+    } catch (error) {
+        console.log("Error While Fetching Course",error.message);
+        return res.status(500).json({
+            success : false ,
+            message : "Internal Server Error While Fetching Course",
+        })
+    }
+}
+
+module.exports = {createCourse , getAllCourses , getCourseDetails}
