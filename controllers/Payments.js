@@ -85,13 +85,67 @@ const capturePayment = async(req,res) => {
             message : 'Internal Server Error !!!'
         })
     }
-}
+};
 
 //verify Signature of Razorpay and Server 
-
 const verifySignature = async(req,res) => {
     try {
         
+        const webhookSecret = "1234567890";
+        const signature = req.headers["x-razorpay-signature"];
+
+        const shasum = crypto.createHmac("sha256",webhookSecret);
+        shasum.update(JSON.stringify(req.body));
+        const digest = shasum.digest("hex");
+
+        if(signature === digest) {
+            console.log("Payment is Authorised !!!");
+            const {courseId , userId} = req.body.payload.payment.entity.notes;
+            try {
+                const enrolledCourse = await Course.findOneAndUpdate(
+                    {_id : courseId},
+                    {$push : {studentsEnrolled : userId}} ,
+                    {new : true }
+                ); 
+
+                if(!enrolledCourse) {
+                    return res.status(500).json({
+                        success : false,
+                        message : "Course Not Found !!!"
+                    });
+                }
+
+                console.log("Enrolled Course :- ",enrolledCourse);
+
+                const enrollStudent = await User.findOneAndUpdate(
+                    {_id : userId} ,
+                    {$push : {courses : courseId }},
+                    {new : true }
+                );
+
+                console.log("Enroller Student :- ",enrollStudent );
+                
+                //mail send kro confirmation
+                const emailResponse = await mailSender(enrollStudent.email , "Congratulations ","Congratulation Your are onboarded on new course !!!") 
+                
+                return res.status(200).json({
+                    success : true ,
+                    message : "Succefuuly Enrolled in the Selected Course !!!"
+                })
+            } catch (error) {
+                console.log("Error while capturing payment :- ",error.message)
+                return res.status(500).json({
+                    success : false ,
+                    message : 'Internal Server Error !!!'
+                })
+            }
+        } else {
+            return res.status(400).json({
+                success: false ,
+                message : "Invalid request !!!"
+            })
+        }
+
     } catch (error) {
         console.log("Error while capturing payment :- ",error.message)
         return res.status(500).json({
@@ -99,6 +153,6 @@ const verifySignature = async(req,res) => {
             message : 'Internal Server Error !!!'
         })
     }
-}
+};
 
 module.exports = { capturePayment , verifySignature };
