@@ -491,7 +491,62 @@ Please ensure your code adheres to the existing style and conventions.
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details (you'll need to create a `LICENSE` file if you don't have one).
 
----
+## API Documentation
+
+The backend API provides endpoints for authentication, user management, course operations, payments, and more. Below is a summary of the main API endpoints:
+
+### Authentication & User
+
+- `POST /api/v1/auth/signup` — Register a new user (Student, Instructor, or Admin)
+- `POST /api/v1/auth/login` — User login
+- `POST /api/v1/auth/sendotp` — Send OTP for email verification or password reset
+- `POST /api/v1/auth/reset-password-token` — Request a password reset token
+- `POST /api/v1/auth/reset-password` — Reset user password
+- `GET /api/v1/profile/getUserDetails` — Get the authenticated user's profile (requires JWT)
+- `PUT /api/v1/profile/update` — Update user profile information
+
+### Course Management
+
+- `POST /api/v1/course/createCourse` — Create a new course (Instructor/Admin only)
+- `PUT /api/v1/course/editCourse/:courseId` — Edit an existing course
+- `DELETE /api/v1/course/deleteCourse/:courseId` — Delete a course
+- `GET /api/v1/course/getAllCourses` — Retrieve all available courses
+- `GET /api/v1/course/getCourseDetails/:courseId` — Get details for a specific course
+- `POST /api/v1/course/enroll/:courseId` — Enroll a student in a course
+
+### Sections & Subsections
+
+- `POST /api/v1/section/create` — Add a section to a course
+- `PUT /api/v1/section/edit/:sectionId` — Edit a section
+- `DELETE /api/v1/section/delete/:sectionId` — Delete a section
+- `POST /api/v1/subsection/create` — Add a subsection (lecture/assignment) to a section
+- `PUT /api/v1/subsection/edit/:subSectionId` — Edit a subsection
+- `DELETE /api/v1/subsection/delete/:subSectionId` — Delete a subsection
+
+### Categories & Tags
+
+- `POST /api/v1/category/create` — Create a new course category
+- `GET /api/v1/category/getAll` — Get all categories
+- `POST /api/v1/tag/create` — Create a new tag
+- `GET /api/v1/tag/getAll` — Get all tags
+
+### Ratings & Reviews
+
+- `POST /api/v1/rating/create` — Submit a rating and review for a course
+- `GET /api/v1/rating/getCourseReviews/:courseId` — Get all reviews for a course
+
+### Payments
+
+- `POST /api/v1/payments/capturePayment` — Initiate a payment for course enrollment
+- `POST /api/v1/payments/verifySignature` — Verify payment signature (Stripe webhook)
+
+### Utilities
+
+- `POST /api/v1/contact` — Submit a contact/inquiry form
+
+> **Note:** Most endpoints require authentication via JWT. Instructor/Admin routes require appropriate roles.
+
+For detailed request/response formats, refer to the API documentation or inspect the controller files in the `backend/controllers/` directory.
 
 ## Contact
 
